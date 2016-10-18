@@ -10,7 +10,9 @@ public class ListaDoble<T> {
 	public int size;
 	
 	public ListaDoble() {
-		//size = 0;
+    	this.size = 0;
+    	this.inicio = null;
+    	this.ultimo = this.inicio;
 	}
 	public int size() { 
 		return size; 
@@ -29,7 +31,7 @@ public class ListaDoble<T> {
 		if(inicio == null) {
 			inicio = temporal;}
 		size++;
-		System.out.println("adding: "+dato);
+
 	}
 	public void addFirst(T dato) {
 		NodoDoble<T> temporal = new NodoDoble<T>(dato, inicio, null);
@@ -39,7 +41,7 @@ public class ListaDoble<T> {
 		inicio = temporal;
 		if(ultimo == null) { ultimo = temporal;}
 		size++;
-		System.out.println("adding: " + dato.getClass().getName());
+
 	}
 	public void addAt(T dato , int pos)
 	{
@@ -85,40 +87,35 @@ public class ListaDoble<T> {
             inicio = null;
             ultimo = null;
             size = 0;
-            return ;
         }        
-        if (index == 1){
-            inicio = inicio.getSiguiente();
-            ultimo.setSiguiente(inicio);
+        else if (index == 1){
+        	this.inicio.getSiguiente().setAnterior(null);
+            this.inicio = this.inicio.getSiguiente();
             size--; 
-            return ;
         }
-        if (index == size){
-            NodoDoble<T> s = inicio;
-            NodoDoble<T> t = inicio;
-            while (s != ultimo){
-                t = s;
-                s = s.getSiguiente();
+        else if (index == size){
+            this.ultimo.getAnterior().setSiguiente(null);
+            this.ultimo = this.ultimo.getAnterior();
+            size--; 
+        }
+        else if((1 < index) &&(index < size)){
+        	NodoDoble<T> temp = this.inicio.getSiguiente();
+            index = index - 1 ;
+            for (int i = 1; i < size - 1; i++){
+                if (i == index){
+                	temp.getAnterior().setSiguiente(temp.getSiguiente());
+                	temp.getSiguiente().setAnterior(temp.getAnterior());    	
+                    break;
+                }
+                else{
+                	temp = temp.getSiguiente();
+                }
             }
-            ultimo = t;
-            ultimo.setSiguiente(inicio);
-            size --;
-            return;
+            size-- ;
         }
-        NodoDoble<T> ptr = inicio;
-        index = index - 1 ;
-        for (int i = 1; i < size - 1; i++){
-            if (i == index){
-                NodoDoble<T> tmp = ptr.getSiguiente();
-                tmp = tmp.getSiguiente();
-                ptr.setSiguiente(tmp);
-                break;
-            }
-            ptr = ptr.getSiguiente();
-        }
-        size-- ;
+       
     }
-	public Boolean search(T dato){
+	public boolean search(T dato){
 		NodoDoble<T> temporal = new NodoDoble<T>();
 		temporal = inicio;
 		int contador = 0;
@@ -142,7 +139,84 @@ public class ListaDoble<T> {
 		}
 		
 	}
-	}
+	 public void intercambiar(NodoDoble<T> nodo1, NodoDoble<T> nodo2){
+
+			T datoNodo1 = nodo1.getDato();
+			T datoNodo2 = nodo2.getDato();
+			
+			nodo1.setDato(datoNodo2);
+			nodo2.setDato(datoNodo1);
+	    }
+	    
+	    public void insertarAntes(NodoDoble<T> nodoAInsertar, NodoDoble<T> nodoDelantero){
+	    	if(nodoAInsertar != nodoDelantero){
+		    	//Se elimina el nodo
+		    	if (nodoAInsertar == this.inicio){
+		    		this.inicio = nodoAInsertar.getSiguiente();
+			    	nodoAInsertar.getSiguiente().setAnterior(null);
+		    	}
+		    	else if(nodoAInsertar == this.ultimo){
+		    		this.ultimo = nodoAInsertar.getAnterior();
+		    		nodoAInsertar.getAnterior().setSiguiente(null);
+		    	}
+		    	else{
+		    		nodoAInsertar.getAnterior().setSiguiente(nodoAInsertar.getSiguiente());
+			    	nodoAInsertar.getSiguiente().setAnterior(nodoAInsertar.getAnterior());
+		    	}
+		    	
+		    	
+		    	
+		    	
+		    	//Se agrega y se corrigen punteros delos nodos adyacentes
+		    	if (nodoDelantero == this.inicio){
+		    		this.inicio = nodoAInsertar;
+		    		nodoDelantero.setAnterior(nodoAInsertar);
+		    		nodoAInsertar.setAnterior(null);
+		    	}
+		    	else{
+			    	NodoDoble<T> anterior = nodoDelantero.getAnterior();
+			    	
+			    	anterior.setSiguiente(nodoAInsertar);
+			    	nodoDelantero.setAnterior(nodoAInsertar);
+			    	
+			    	nodoAInsertar.setAnterior(anterior);
+		    	}
+		    	
+		    	nodoAInsertar.setSiguiente(nodoDelantero);  
+	    	}
+	    	
+	    }
+	    
+	    public void insertarNuevoAntes(NodoDoble<T> nodoAInsertar, NodoDoble<T> nodoDelantero){
+	    	//Se agrega y se corrigen punteros delos nodos adyacentes
+	    	if (nodoDelantero == this.inicio){
+	    		this.inicio = nodoAInsertar;
+	    		nodoDelantero.setAnterior(nodoAInsertar);
+	    		nodoAInsertar.setAnterior(null);
+	    	}
+	    	else{
+		    	NodoDoble<T> anterior = nodoDelantero.getAnterior();
+		    	
+		    	anterior.setSiguiente(nodoAInsertar);
+		    	nodoDelantero.setAnterior(nodoAInsertar);
+		    	
+		    	nodoAInsertar.setAnterior(anterior);
+	    	}
+	    	
+	    	nodoAInsertar.setSiguiente(nodoDelantero);
+	    }
+	    
+	    public NodoDoble<T> get(int index){
+	    	
+	    	NodoDoble<T> temp = this.inicio;
+	    	
+	    	for (int i = 0; i < index; i++){
+	    		temp = temp.getSiguiente();
+	    	}
+	    	
+			return temp;
+	    }
+}
 	
 	
 	
