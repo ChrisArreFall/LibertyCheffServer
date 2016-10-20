@@ -1,13 +1,16 @@
 package Menu;
 
 import EstructurasDeDatos.ListaDoble;
+import Objetos.Restaurante;
+import PatronesDeDiseno.Sujeto;
 import Usuario.Cliente;
 
-public class Orden {
+public class Orden implements Sujeto {
 	private Cliente cliente = new Cliente();
 	private Platillo platillo = new Platillo();
 	private Integer monto;
 	private String estado;
+	private String estadoPreparacion = "Nueva";
 	private ListaDoble<Pasos> listaPasos = new ListaDoble<Pasos>();
 
 
@@ -64,6 +67,14 @@ public class Orden {
 		return estado;
 	}
 	
+	public String getEstadoPreparacion(){
+		return this.estadoPreparacion;
+	}
+	
+	public String setEstadoPreparacion(String nuevoEstado){
+		this.estado = nuevoEstado;
+	}
+	
 	public ListaDoble<Pasos> getListaPasos() {
 		return listaPasos;
 	}
@@ -71,5 +82,20 @@ public class Orden {
 
 	public void setListaPasos(ListaDoble<Pasos> listaPasos) {
 		this.listaPasos = listaPasos;
+	}
+	
+	public void notificar(){
+		if (listaObservadores.size() > 0){
+			for(int i = 0; i < listaObservadores.size(); i++){
+				listaObservadores.get(i).getDato().notificarOrdenNueva(this);
+			}
+		}
+	}
+	
+	public void agregarObservador(Restaurante restaurante){
+		listaObservadores.addFirst(restaurante);
+	}
+	public void eliminarObservador(Restaurante restaurante){
+		//hacer metodo de borrar con dato en la lista enlazada
 	}
 }

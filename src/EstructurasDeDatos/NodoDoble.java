@@ -19,6 +19,12 @@ public class NodoDoble<T>{
         this.siguiente = siguiente;
         this.anterior = anterior;
     }
+    public NodoDoble(T dato)
+    {
+        this.dato = dato;
+        this.siguiente = null;
+        this.anterior = null;
+    }
     /* Function to set link to siguiente node */
     public void setSiguiente(NodoDoble<T> siguiente)
     {
